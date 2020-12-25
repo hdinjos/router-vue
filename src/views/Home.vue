@@ -1,18 +1,46 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>List Post</h1>
+    <ul v-for="post in postLimitByFive" :key="post.id">
+      <li><router-link :to="`user/${post.userId}`">{{post.title}}</router-link></li>
+    </ul>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+// import HelloWorld from '@/components/HelloWorld.vue'
+import axios from "axios";
 
 export default {
-  name: 'Home',
+  name: "Home",
+  data: () => {
+    return {
+      posts: "",
+    };
+  },
+  computed: {
+    postLimitByFive(){
+      return this.posts.slice(0,5);
+    }
+  },
   components: {
-    HelloWorld
+    // HelloWorld
+  },
+  methods: {
+    async getPosts() {
+      try {
+        const res = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts"
+        );
+        this.posts = res.data;
+      }catch(err){
+        console.log(err);
+      }
+    },
+  },
+  created(){
+    this.getPosts();
   }
-}
+};
 </script>
